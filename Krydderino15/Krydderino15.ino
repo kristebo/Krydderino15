@@ -1,109 +1,166 @@
-/// 
-/// @mainpage	Krydderino15 
-///
-/// @details	<#details#>
-/// @n 
-/// @n 
-/// @n @a	Developed with [embedXcode](http://embedXcode.weebly.com)
-/// 
-/// @author	Haakon Storm Heen
-/// @author	Haakon Storm Inc
-/// @date	21.05.13 17:06
-/// @version	<#version#>
-/// 
-/// @copyright	© Haakon Storm Heen, 2013
-/// @copyright	CC = BY NC SA
-///
-/// @see	ReadMe.txt for references
-///
 
 
-///
-/// @file	Krydderino15.ino 
-/// @brief	Main sketch
-///
-/// @details	<#details#>
-/// @n @a	Developed with [embedXcode](http://embedXcode.weebly.com)
-/// 
-/// @author	Haakon Storm Heen
-/// @author	Haakon Storm Inc
-/// @date	21.05.13 17:06
-/// @version	<#version#>
-/// 
-/// @copyright	© Haakon Storm Heen, 2013
-/// @copyright	CC = BY NC SA
-///
-/// @see	ReadMe.txt for references
-/// @n
-///
-
-
-// Core library for code-sense
-#if defined(WIRING) // Wiring specific
-#include "Wiring.h"
-#elif defined(MAPLE_IDE) // Maple specific
-#include "WProgram.h"   
-#elif defined(MPIDE) // chipKIT specific
-#include "WProgram.h"
-#elif defined(DIGISPARK) // Digispark specific
 #include "Arduino.h"
-#elif defined(ENERGIA) // LaunchPad, FraunchPad and StellarPad specific
-#include "Energia.h"
-#elif defined(CORE_TEENSY) // Teensy specific
-#include "WProgram.h"
-#elif defined(ARDUINO) && (ARDUINO >= 100) // Arduino 1.0 and 1.5 specific
-#include "Arduino.h"
-#elif defined(ARDUINO) && (ARDUINO < 100) // Arduino 23 specific
-#include "WProgram.h"
-#else // error
-#error Platform not defined
-#endif
-
-// Include application, user and local libraries
 #include "LocalLibrary.h"
 
-// Define variables and constants
-///
-/// @brief	Name of the LED
-/// @details	Each board has a LED but connected to a different pin
-///
-uint8_t myLED;
+#include "MagicNumbers.h"	// Constants and magic numbers
+#include "Sensirion.h"		// Air Temperature & Relative Humidity library
+#include "WaterLevel.h"		// e-Tape Water Level sensor
+#include "LCD.h"			// LCD display
+#include "Temperature.h"	// Water proof water temperature thermistor
+#include "Status.h"
+#include "Relay_12V.h"
+#include "EC.h"				// Atlas Scientific EC-sensor class
+#include "PH.h"				// Atlas Scientific PH-sensor class
 
 
-///
-/// @brief	Setup
-/// @details	Define the pin the LED is connected to
-///
-// Add setup code 
-void setup() {
-  // myLED pin number
-#if defined(__AVR_ATmega328P__) || defined(__AVR_ATmega2560__) || defined(__AVR_ATmega32U4__) || defined(__SAM3X8E__) // Arduino specific 
-  myLED = 13; 
-#elif defined(__PIC32MX__) // chipKIT specific
-  myLED = 13;
-#elif defined(__AVR_ATtinyX5__) // Digispark specific
-    myLED = 1; // assuming model A
-#elif defined(__AVR_ATmega644P__) // Wiring specific
-  myLED = 15; 
-#elif defined(__MSP430G2452__) || defined(__MSP430G2553__) || defined(__MSP430G2231__) || defined(__MSP430FR5739__) // LaunchPad and FraunchPad specific
-  myLED = RED_LED; 
-#elif defined(__LM4F120H5QR__) // StellarPad specific
-  myLED = RED_LED;
-#elif defined(MCU_STM32F103RB) || defined(MCU_STM32F103ZE) || defined(MCU_STM32F103CB) || defined(MCU_STM32F103RE) // Maple specific
-  myLED = BOARD_LED_PIN; 
-#elif defined(__MK20DX128__) // Teensy 3.0 specific
-    myLED = 13;
-#endif
+// Instantiate sensor and actuator classes
+Status status = Status();
+Sensirion airtemp = Sensirion();
+WaterLevel waterlevel = WaterLevel();
+LCD lcd = LCD(&status);
+Temperature temp = Temperature();
+Relay_12V mister_fan = Relay_12V(MISTER_FAN_PIN);
+Relay_12V plant_fan = Relay_12V(PLANT_FAN_PIN);
+Relay_12V mister = Relay_12V(MISTER_PIN);
+Relay_12V nute_solenoid = Relay_12V(PPM_PIN);
+Relay_12V phup_solenoid = Relay_12V(PHPLUS_PIN);
+Relay_12V phdown_solenoid = Relay_12V(PHMINUS_PIN);
+EC ec = EC();
+PH ph = PH();
 
-  pinMode(myLED, OUTPUT);     
+int str_counter_1;
+int str_counter_3;
+
+int cycle_counter;
+
+// Add setup code
+void setup()
+{
+    //	Serial.begin(9600);
+	lcd.init();
+	//				1234567890123456
+	lcd.clear();
+	lcd.display(0, "Calibrating\0  ");
+	lcd.display(1, "sensors...\0   ");
+//	waterlevel.init();
+	lcd.clear();
+	lcd.display(0, "Sensors okay.\0");
+	ec.initialize_ec_sensor();
+	ph.initialize_ph_sensor();
+	cycle_counter = 0;
+	
+    //	Serial.begin(38400); // hardware serial port
+    //	Serial3.begin(38400); // software serial port
+	
+    //	Serial.begin(9600); // Open serial connection to report values to host
+    Serial.print("WaterLevel init...");
 }
 
-///
-/// @brief	Loop
-/// @details	Call blink
-///
-// Add loop code 
+
+
+// Add loop code
 void loop() {
-  blink(myLED, 3, 333);
-  delay(1000);    
+	cycle_counter++;
+    
+    // **** Fetch & Display temp/RH sensor ****
+    
+//	status.plant_temperature = airtemp.read_temperature();
+//	status.plant_humidity = airtemp.read_humidity();
+//	lcd.print_plant_temp_and_rh();
+//    mister.on();
+//	delay(2500);
+//    mister.off();
+    
+    
+    // **** Fetch & Display water level sensor ****
+	
+//	status.water_level_instant = waterlevel.read_sensor();
+//    //	status.water_level_instant =
+//	waterlevel.get_averaged_water_level();
+//	status.water_level_in_inches = waterlevel.water_level_in_inches();
+//	status.water_level = waterlevel.humanized_level();
+//	status.water_temperature = temp.temperature_in_celcius();
+//	lcd.print_water_level();
+//	delay(2500);
+//	lcd.print_water_level_instant();
+	delay(2500);
+    
+    // **** Dumping Cycle Counter on LCD ****
+	
+	lcd.display_number(cycle_counter, 0);
+	
+    // **** Run 24V mister fan relay for 5 mins every 30 mins ****
+	if ((cycle_counter % (180)) == 0)
+	{
+		cycle_counter = 0;	// reset the cycle counter
+		lcd.clear(); //1234567890123456
+		lcd.display(0,"Mister ON     \0");
+		lcd.display(1,"Mister Fan ON \0");
+//		mister.on();
+//		mister_fan.on();
+		delayMicroseconds( 60 * 1000000 ); // one minute
+        //		delay(5 * 60 * 1000);
+		lcd.clear(); //1234567890123456
+		lcd.display(0,"Mister OFF    \0");
+		lcd.display(1,"Mister Fan OFF\0");
+        //		delay(100);
+//		mister.off();
+//		mister_fan.off();
+	} //else; // mister.off();
+    
+//	mister.off();	// just in case
+//	mister_fan.off();
+	
+    // **** Run Top Fan If Too Hot ****
+	
+	if (status.plant_temperature >= 26)
+	{
+		lcd.clear(); //1234567890123456
+		lcd.display(0,"Too hot! >26C\0");
+		lcd.display(1,"Starting fan!\0");
+//		plant_fan.on();
+	}
+	
+    // **** Run Top Fan If Too Humid ****
+	
+	if (status.plant_humidity >= 60)
+	{
+		lcd.clear(); //1234567890123456
+		lcd.display(0,"Too humid!\0");
+		lcd.display(1,"Starting fan!\0");
+//		plant_fan.on();
+	}
+    
+    // **** Stop Top Fan If Nice ****
+    
+//	if ((status.plant_temperature < 26) && (status.plant_humidity < 60))
+//	{
+//		lcd.clear(); //1234567890123456
+//		lcd.display(0,"Perfect now.\0");
+//		lcd.display(1,"Stopping fans.\0");
+//		plant_fan.off();
+//	}
+	delay(2000);
+	
+    // **** Process EC & PH sensors ****
+	
+	ec.averaged_reading();
+	ph.averaged_reading();
+	status.water_ec = ec.last_average;
+	status.water_ph = ph.last_average;
+	lcd.print_ec_and_ppm();
+    delay(2000);
+	
+    // **** Based on EC & pH, release fluids ****
+	
+    // **** Test solenoids ****
+	
+//    nute_solenoid.on(400);
+//    delay(1000);
+//    phup_solenoid.on(400);
+//    delay(1000);
+//    phdown_solenoid.on(400);
+//    delay(1000);
+    
 }
