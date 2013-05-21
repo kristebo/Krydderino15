@@ -16,8 +16,7 @@ PH::PH()
 
 int PH::initialize_ph_sensor(void)
 {
-	Serial3.begin(PH_BAUD_RATE);
-	
+	Serial3.begin(PH_BAUD_RATE);	
 	return 0; // OK
 }
 
