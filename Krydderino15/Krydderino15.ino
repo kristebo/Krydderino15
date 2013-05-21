@@ -55,7 +55,6 @@ void setup()
     //	Serial.begin(38400); // hardware serial port
 	
     Serial.begin(9600); // Open serial connection to report values to host
-    Serial.print("WaterLevel init...");
 }
 
 //******************************************************************************
@@ -81,9 +80,13 @@ void loop() {
 //	waterlevel.get_averaged_water_level();
 //	status.water_level_in_inches = waterlevel.water_level_in_inches();
 //	status.water_level = waterlevel.humanized_level();
-//	status.water_temperature = temp.temperature_in_celcius();
-//	lcd.print_water_level();
-//	delay(2500);
+
+    // hack while waiting for new water level sensor:
+    status.water_level = WL_NORMAL;
+
+	status.water_temperature = temp.temperature_in_celcius();
+	lcd.print_water_level();
+	delay(1000);
 //	lcd.print_water_level_instant();
 	delay(2500);
     
