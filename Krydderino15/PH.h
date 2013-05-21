@@ -19,7 +19,6 @@ public:
 	float last_average;
 	float last_samples[PH_NUM_OF_SAMPLES];
 	
-	char* sensorstring;
     char read;
 	
     bool input_stringcomplete;

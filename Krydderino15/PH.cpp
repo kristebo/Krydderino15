@@ -22,18 +22,27 @@ int PH::initialize_ph_sensor(void)
 
 float PH::read_sensor(void)
 {
-	sensorstring = "";
+	String sensorstring;
+    sensorstring.reserve(30);
+    char tmp_sensorstring[40] = {'\0', '\0', '\0', '\0', '\0', '\0'};
     float ph = -1.0;
-    Serial3.print("r\r");
+    
+    Serial3.print("r\r");   // Tell the pH stamp to measure the pH probe
+    delay(1000);             // Give the pH stamp time to do its magic
     
     while (Serial3.available() > 0) {
         read = (char)Serial3.read();
-        
         sensorstring += read;
+//        Serial.println(read);
     }
-    
-	ph = atoi(sensorstring);
-    
+//    sensorstring += (char)'\0';
+    sensorstring.toCharArray(tmp_sensorstring, 6);
+    tmp_sensorstring[5] = '\0';
+	ph = atof(tmp_sensorstring);
+    Serial.print("Sensorstring: ");
+    Serial.println(sensorstring);
+    Serial.print("float pH:");
+    Serial.println(ph);
     return ph;
 }
 
@@ -51,8 +60,12 @@ float PH::averaged_reading(void)
 	}
     
 	
-	rounded_average = (float)(ph_sum / PH_NUM_OF_SAMPLES);
+	rounded_average = (float)(ph_sum / (PH_NUM_OF_SAMPLES));
     
 	last_average = rounded_average;
+    Serial.print("Rounded average: ");
+    Serial.println(last_average);
+    Serial.print("As (int): ");
+    Serial.println((int)last_average);
 	return rounded_average;
 }

@@ -50,7 +50,7 @@
 	// 		PARAMETERS FOR PH SENSOR LIBRARY
 	// ***********************************************
 
-#define PH_NUM_OF_SAMPLES	30
+#define PH_NUM_OF_SAMPLES	10
 #define PH_SAMPLE_DELAY		10
 #define PH_RX				14
 #define PH_TX				15

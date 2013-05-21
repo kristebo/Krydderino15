@@ -34,7 +34,9 @@ int str_counter_3;
 
 int cycle_counter;
 
-// Add setup code
+//******************************************************************************
+//************************************ SETUP ***********************************
+//******************************************************************************
 void setup()
 {
     //	Serial.begin(9600);
@@ -51,15 +53,14 @@ void setup()
 	cycle_counter = 0;
 	
     //	Serial.begin(38400); // hardware serial port
-    //	Serial3.begin(38400); // software serial port
 	
-    //	Serial.begin(9600); // Open serial connection to report values to host
+    Serial.begin(9600); // Open serial connection to report values to host
     Serial.print("WaterLevel init...");
 }
 
-
-
-// Add loop code
+//******************************************************************************
+//************************************ LOOP ************************************
+//******************************************************************************
 void loop() {
 	cycle_counter++;
     
@@ -143,12 +144,21 @@ void loop() {
 //	}
 	delay(2000);
 	
-    // **** Process EC & PH sensors ****
+    // **** Process pH sensor ****
 	
-	ec.averaged_reading();
+    lcd.clear(); //1234567890123456
+    lcd.display(0,"Reading pH\0");
+    lcd.display(1,"level in water..\0");
 	ph.averaged_reading();
-	status.water_ec = ec.last_average;
 	status.water_ph = ph.last_average;
+
+    // **** Process EC sensor ****
+
+    lcd.clear(); //1234567890123456
+    lcd.display(0,"Reading nutrient\0");
+    lcd.display(1,"level in water..\0");
+	ec.averaged_reading();
+	status.water_ec = ec.last_average;
 	lcd.print_ec_and_ppm();
     delay(2000);
 	
