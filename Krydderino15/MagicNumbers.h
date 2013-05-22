@@ -16,7 +16,7 @@
 #define MISTER_PIN			35
 
 	// ***********************************************
-	// 		PARAMETERS FOR 12V MISTER FAN RELAY
+	// 		PARAMETERS FOR 24V MISTER FAN RELAY
 	// ***********************************************
 
 #define MISTER_FAN_PIN		31

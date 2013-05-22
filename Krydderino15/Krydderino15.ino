@@ -65,13 +65,14 @@ void loop() {
     
     // **** Fetch & Display temp/RH sensor ****
     
-//	status.plant_temperature = airtemp.read_temperature();
-//	status.plant_humidity = airtemp.read_humidity();
-//	lcd.print_plant_temp_and_rh();
-//    mister.on();
-//	delay(2500);
-//    mister.off();
-    
+    for (int x=0; x < 2; x++)
+    {
+        status.plant_temperature = airtemp.read_temperature();
+        status.plant_humidity = airtemp.read_humidity();
+        delay(2000);
+        lcd.print_plant_temp_and_rh();
+    }
+
     
     // **** Fetch & Display water level sensor ****
 	
@@ -84,38 +85,48 @@ void loop() {
     // hack while waiting for new water level sensor:
     status.water_level = WL_NORMAL;
 
-	status.water_temperature = temp.temperature_in_celcius();
-	lcd.print_water_level();
-	delay(1000);
+//	status.water_temperature = temp.temperature_in_celcius();
+//	lcd.print_water_level();
+//	delay(1000);
 //	lcd.print_water_level_instant();
-	delay(2500);
+//	delay(2500);
+    
     
     // **** Dumping Cycle Counter on LCD ****
 	
 	lcd.display_number(cycle_counter, 0);
 	
-    // **** Run 24V mister fan relay for 5 mins every 30 mins ****
-	if ((cycle_counter % (180)) == 0)
+    // **** Run 24V mister fan relay for some time every n cycles ****
+	if ((cycle_counter % (3)) == 0)
 	{
+        plant_fan.off();
 		cycle_counter = 0;	// reset the cycle counter
 		lcd.clear(); //1234567890123456
-		lcd.display(0,"Mister ON     \0");
-		lcd.display(1,"Mister Fan ON \0");
-//		mister.on();
-//		mister_fan.on();
-		delayMicroseconds( 60 * 1000000 ); // one minute
-        //		delay(5 * 60 * 1000);
+		lcd.display(0,"   \0");
+		lcd.display(1,"AeroMister    ON  \0");
+		mister.on();
+        delay(5 * 1000);
 		lcd.clear(); //1234567890123456
-		lcd.display(0,"Mister OFF    \0");
-		lcd.display(1,"Mister Fan OFF\0");
-        //		delay(100);
-//		mister.off();
-//		mister_fan.off();
-	} //else; // mister.off();
-    
-//	mister.off();	// just in case
-//	mister_fan.off();
-	
+		lcd.display(0,"Aeroponic fan ON  \0");
+		lcd.display(1,"AeroMister    ON  \0");
+		mister_fan.on();
+        for (int k=0; k < 5; k++) {
+            lcd.display(0,"Aeroponic fanOFF\0");
+            mister_fan.off();
+            delay(8000);
+            lcd.display(0,"Aeroponic fan ON  \0");
+            mister_fan.on();
+            delay(3000);
+        }
+		lcd.clear(); //1234567890123456
+		lcd.display(0,"Aeroponic fa.OFF\0");
+        delay(300);
+		mister_fan.off();
+        delay(1000);
+		lcd.display(1,"AeroMister   OFF\0");
+        mister.off();
+	} else mister.off();
+    	
     // **** Run Top Fan If Too Hot ****
 	
 	if (status.plant_temperature >= 26)
@@ -123,28 +134,28 @@ void loop() {
 		lcd.clear(); //1234567890123456
 		lcd.display(0,"Too hot! >26C\0");
 		lcd.display(1,"Starting fan!\0");
-//		plant_fan.on();
+		plant_fan.on();
 	}
 	
     // **** Run Top Fan If Too Humid ****
 	
-	if (status.plant_humidity >= 60)
+	if (status.plant_humidity >= 65)
 	{
 		lcd.clear(); //1234567890123456
 		lcd.display(0,"Too humid!\0");
 		lcd.display(1,"Starting fan!\0");
-//		plant_fan.on();
+		plant_fan.on();
 	}
     
     // **** Stop Top Fan If Nice ****
     
-//	if ((status.plant_temperature < 26) && (status.plant_humidity < 60))
-//	{
-//		lcd.clear(); //1234567890123456
-//		lcd.display(0,"Perfect now.\0");
-//		lcd.display(1,"Stopping fans.\0");
-//		plant_fan.off();
-//	}
+	if ((status.plant_temperature < 26) && (status.plant_humidity < 65))
+	{
+		lcd.clear(); //1234567890123456
+		lcd.display(0,"Perfect now.\0");
+		lcd.display(1,"Stopping fans.\0");
+		plant_fan.off();
+	}
 	delay(2000);
 	
     // **** Process pH sensor ****
