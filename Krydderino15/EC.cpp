@@ -32,37 +32,60 @@ void EC::rotate_last_samples_counter(void)
 
 int EC::read_sensor(void)
 {
-	sensorstring = "";
+	String sensorstring;
     int ppm = -1;
+    
+    sensorstring.reserve(30);
+    char tmp_sensorstring[40] = {'\0', '\0', '\0', '\0', '\0', '\0'};
+    
     Serial2.print("r\r"); // \r == carriage return character
+    delay( 2000 );
     
     while (Serial2.available() > 0) {
         read = (char)Serial2.read();
-        
         sensorstring += read;
     }
     
-	ppm = convert_ppm();
+    sensorstring.toCharArray( tmp_sensorstring, 6 );
+    tmp_sensorstring[5] = '\0';
+	ppm = atof(tmp_sensorstring);
+    
+    Serial.print("Sensorstring: ");
+    Serial.println( sensorstring );
+    Serial.print("float ppm:");
+    Serial.println( ppm );
+    
+	ppm = convert_ppm( ppm );
+    
+    Serial.print( "Converted PPM: ");
+    Serial.println( ppm );
     
     return ppm;
 }
 
-int EC::convert_ppm(void)
+int EC::convert_ppm( int ppm )
 {
+    /*
     char *token[5];
     int i = 0;
-    token[0]= strtok(sensorstring, ",");
+    token[0]= strtok( sensorstring, "," );
     
     while (token[i] != NULL) 
     {
         i++;
         token[i] = strtok(NULL, ",");
+        Serial.print( "Token " );
+        Serial.print( i );
+        Serial.print( ": " );
+        serial.println( token[i] );
     }
     
     int ppmInt;
     ppmInt = atoi(token[1]);
 	
-    return ppmInt;
+    return ppmInt; */
+    
+    return ppm;
 }
 
 int EC::averaged_reading(void)
@@ -77,13 +100,23 @@ int EC::averaged_reading(void)
 		total_samples[i] = read_sensor();
 	}
 
+    Serial.println( ec_sum );
+    
 	for (i=0; i < EC_NUM_OF_SAMPLES; i++)
 	{
 		ec_sum += total_samples[i];
 	}
-	
-	rounded_average = (int)(ec_sum / EC_NUM_OF_SAMPLES);
+    
 
+	
+	rounded_average = (int)( ec_sum / EC_NUM_OF_SAMPLES );
+    
 	last_average = rounded_average;
+    
+    Serial.print("Rounded average: ");
+    Serial.println(last_average);
+    Serial.print("As (int): ");
+    Serial.println((int)last_average);
+    
 	return rounded_average;
 }

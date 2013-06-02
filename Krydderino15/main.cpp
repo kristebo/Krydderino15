@@ -69,7 +69,7 @@
 
 #define OPT_SYSTEM_INTERNAL
 #include "System_Defs.h"
-#include "WProgram.h"
+#include "Arduino.h"
 
 int main(void)
 {
@@ -88,7 +88,7 @@ int main(void)
 #elif defined(DIGISPARK) 
 // ====================================================================== Digispark specific
 
-#include "WProgram.h"
+#include "Arduino.h"
 
 int main(void)
 {
@@ -221,7 +221,7 @@ int main(void) {
 #if defined(__MK20DX128__)
 // ---------------------------------------------------------------------- Teensy 3 specific
 
-#include "WProgram.h"
+#include "Arduino.h"
 
 extern "C" int main(void)
 {
@@ -236,7 +236,7 @@ extern "C" int main(void)
 #else 
 // ---------------------------------------------------------------------- Teensy 2 specific
 
-#include "WProgram.h"
+#include "Arduino.h"
 
 //int main(void) __attribute__((noreturn));
 int main(void)
@@ -256,7 +256,7 @@ int main(void)
 #elif defined(WIRING) 
 // ====================================================================== Wiring specific
 
-// Replace #include "WProgram.h" by #include "Wiring.h"
+// Replace #include "Arduino.h" by #include "Wiring.h"
 // Comment boardInit();
 
 #include "Wiring.h"
@@ -281,7 +281,7 @@ int main(void)
 #if (ARDUINO < 100) 
 // ---------------------------------------------------------------------- Arduino 0023 specific
 
-#include "WProgram.h"
+#include "Arduino.h"
 
 int main(void)
 {

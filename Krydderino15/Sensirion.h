@@ -12,7 +12,7 @@
 	// https://www.adafruit.com/products/464
 
 //#include "magic_numbers.h"
-//#include <WProgram.h>
+//#include <Arduino.h>
 
 class Sensirion
 {

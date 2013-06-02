@@ -61,7 +61,7 @@ USER_LIB_PATH  = $(wildcard $(SKETCHBOOK_DIR)/?ibraries)
 
 # Rules for making a c++ file from the main sketch (.pde)
 #
-PDEHEADER      = \\\#include \"WProgram.h\"  
+PDEHEADER      = \\\#include \"Arduino.h\"  
 
 
 # Tool-chain names
