@@ -1,0 +1,16 @@
+2013-06-02
+
+SOFTWARE
+* Create a serial host-to-controller interface. Probably based on Firmata
+    (this implies that business logic has to be moved from the controller onto the host).
+    STATUS: pending
+* Create calibration procedures.
+    STATUS: pending
+* Finish the Processing sketch and port to Raspberry Pi.
+    STATUS: pending
+* Set up polling functionality on both RPI and Arduino. Use JSON as exchange protocol.
+    STATUS: pending
+
+HARDWARE
+* Move the sensor/stamp-breadboard behind the upper chamber.
+* Connect the Sensirion to the ribbon cable and test against another unsoldered sensor.

@@ -4,28 +4,29 @@
 #include "LocalLibrary.h"
 
 #include "MagicNumbers.h"	// Constants and magic numbers
-#include "Sensirion.h"		// Air Temperature & Relative Humidity library
-#include "WaterLevel.h"		// e-Tape Water Level sensor
+#include "Sensirion.h"		// Air Temperature & Relative Humidity sensor
+#include "WaterLevel.h"		// E-tape Water Level sensor
 #include "LCD.h"			// LCD display
-#include "Temperature.h"	// Water proof water temperature thermistor
+#include "Temperature.h"	// Waterproof water temperature thermistor
 #include "Status.h"
 #include "Relay_12V.h"
 #include "EC.h"				// Atlas Scientific EC-sensor class
-#include "PH.h"				// Atlas Scientific PH-sensor class
+#include "PH.h"				// Atlas Scientific pH-sensor class
 
 
 // Instantiate sensor and actuator classes
+
 Status status = Status();
 Sensirion airtemp = Sensirion();
 WaterLevel waterlevel = WaterLevel();
-LCD lcd = LCD(&status);
+LCD lcd = LCD( &status );
 Temperature temp = Temperature();
-Relay_12V mister_fan = Relay_12V(MISTER_FAN_PIN);
-Relay_12V plant_fan = Relay_12V(PLANT_FAN_PIN);
-Relay_12V mister = Relay_12V(MISTER_PIN);
-Relay_12V nute_solenoid = Relay_12V(PPM_PIN);
-Relay_12V phup_solenoid = Relay_12V(PHPLUS_PIN);
-Relay_12V phdown_solenoid = Relay_12V(PHMINUS_PIN);
+Relay_12V mister_fan = Relay_12V( MISTER_FAN_PIN );
+Relay_12V plant_fan = Relay_12V( PLANT_FAN_PIN );
+Relay_12V mister = Relay_12V( MISTER_PIN );
+Relay_12V nute_solenoid = Relay_12V( PPM_PIN );
+Relay_12V phup_solenoid = Relay_12V( PHPLUS_PIN );
+Relay_12V phdown_solenoid = Relay_12V( PHMINUS_PIN );
 EC ec = EC();
 PH ph = PH();
 
@@ -173,7 +174,9 @@ void loop() {
     lcd.display(1,"level in water..\0");
 	ec.averaged_reading();
 	status.water_ec = ec.last_average;
+    
 	lcd.print_ec_and_ppm();
+    
     delay(2000);
 	
     // **** Based on EC & pH, release fluids ****

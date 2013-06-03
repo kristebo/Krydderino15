@@ -61,7 +61,7 @@ CORE_AS_SRCS   = $(wildcard $(CORE_LIB_PATH)/*.S) # */
 
 # Rules for making a c++ file from the main sketch (.pde)
 #
-PDEHEADER      = \\\#include \"WProgram.h\"  
+PDEHEADER      = \\\#include \"Arduino.h\"  
 
 
 # Tool-chain names
